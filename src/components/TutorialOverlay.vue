@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { useTutorial } from '@/composables/useTutorial'
 
+import { computed } from 'vue'
 const { visible, step, close, next, prev } = useTutorial()
+const current = computed(() => steps[step.value]!)
 
 const steps = [
   {
@@ -41,7 +43,7 @@ const steps = [
           <div class="px-6 pt-6 pb-4 border-b border-slate-700/60 flex items-start justify-between gap-4">
             <div>
               <p class="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-1">Guide d'utilisation</p>
-              <h2 class="text-lg font-bold text-white">{{ steps[step].title }}</h2>
+              <h2 class="text-lg font-bold text-white">{{ current.title }}</h2>
             </div>
             <button class="flex-shrink-0 text-slate-500 hover:text-slate-300 transition-colors mt-0.5" @click="close">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -53,9 +55,9 @@ const steps = [
           <!-- Content -->
           <div class="px-6 py-6 flex gap-5 items-start">
             <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-indigo-500/15 border border-indigo-500/20 flex items-center justify-center">
-              <svg class="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-html="steps[step].icon" />
+              <svg class="w-6 h-6 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" v-html="current.icon" />
             </div>
-            <p class="text-slate-300 text-sm leading-relaxed" v-html="steps[step].desc" />
+            <p class="text-slate-300 text-sm leading-relaxed" v-html="current.desc" />
           </div>
 
           <!-- Footer -->
