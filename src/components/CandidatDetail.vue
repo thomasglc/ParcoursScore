@@ -52,8 +52,10 @@ interface ColGroup {
 }
 
 const colGroups = computed<ColGroup[]>(() => {
+  const excluded = new Set([props.displayCols.nom, props.displayCols.prenom])
   const general: number[] = [], y2526: number[] = [], y2425: number[] = []
   props.headers.slice(0, 26).forEach((h, i) => {
+    if (excluded.has(i)) return
     const s = String(h ?? '').trim()
     if (!s) return
     if (s.includes('2025/2026')) { if (!s.toLowerCase().includes('année scolaire')) y2526.push(i) }
@@ -66,6 +68,15 @@ const colGroups = computed<ColGroup[]>(() => {
   if (y2425.length) groups.push({ label: 'Scolarité 2024/2025', cols: y2425, classes: { section: 'bg-emerald-950/50 border border-emerald-800/40', heading: 'text-emerald-400' } })
   return groups
 })
+
+const serieCols = computed(() =>
+  (colGroups.value[0]?.cols ?? []).filter(i =>
+    String(props.headers[i] ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes('serie')
+  )
+)
+const generalOtherCols = computed(() =>
+  (colGroups.value[0]?.cols ?? []).filter(i => !serieCols.value.includes(i))
+)
 
 function colLabel(i: number): string {
   return String(props.headers[i] ?? `Colonne ${i}`)
@@ -110,8 +121,15 @@ const candidatName = computed(() =>
             <h3 class="text-xs font-semibold uppercase tracking-widest mb-2" :class="colGroups[0]?.classes.heading">
               {{ colGroups[0]?.label }}
             </h3>
+            <!-- Série Diplôme en avant -->
+            <div v-if="serieCols.length" class="mb-3 rounded-lg bg-slate-700/60 px-3 py-2 grid grid-cols-2 gap-x-4 gap-y-1">
+              <div v-for="i in serieCols" :key="i" class="min-w-0">
+                <dt class="text-xs text-slate-400 truncate leading-tight">{{ colLabel(i) }}</dt>
+                <dd class="text-sm text-white font-semibold truncate" :title="colValue(i)">{{ colValue(i) }}</dd>
+              </div>
+            </div>
             <dl class="grid grid-cols-2 gap-x-4 gap-y-1.5">
-              <div v-for="i in colGroups[0]?.cols" :key="i" class="min-w-0">
+              <div v-for="i in generalOtherCols" :key="i" class="min-w-0">
                 <dt class="text-xs text-slate-500 truncate leading-tight">{{ colLabel(i) }}</dt>
                 <dd class="text-sm text-slate-200 truncate font-medium" :title="colValue(i)">{{ colValue(i) }}</dd>
               </div>
@@ -119,7 +137,7 @@ const candidatName = computed(() =>
           </section>
 
           <!-- Scolarités empilées -->
-          <div class="w-56 flex flex-col gap-2 min-h-0">
+          <div class="w-72 flex flex-col gap-2 min-h-0">
             <section
               v-for="group in colGroups.slice(1)"
               :key="group.label"
@@ -131,8 +149,8 @@ const candidatName = computed(() =>
               </h3>
               <dl class="space-y-1.5">
                 <div v-for="i in group.cols" :key="i" class="min-w-0">
-                  <dt class="text-xs text-slate-500 truncate leading-tight">{{ colLabel(i) }}</dt>
-                  <dd class="text-sm text-slate-200 truncate font-medium" :title="colValue(i)">{{ colValue(i) }}</dd>
+                  <dt class="text-xs text-slate-500 leading-tight">{{ colLabel(i) }}</dt>
+                  <dd class="text-sm text-slate-200 font-medium break-words" :title="colValue(i)">{{ colValue(i) }}</dd>
                 </div>
               </dl>
             </section>
