@@ -30,9 +30,49 @@ const COL_COMPORTEMENT = 27
 const COL_MOTIVATION = 28
 const COL_REMARQUE = 29
 
+const COL_CODE = 3 // "Candidat - Code"
+
+type SavedEvals = Record<string, EvaluationData>
+
+function storageKey(fileName: string) { return `parcoursscore:${fileName}` }
+
+function persistEvals(fileName: string, data: RawRow[]) {
+  const saved: SavedEvals = {}
+  data.slice(1).forEach(row => {
+    const code = String(row[COL_CODE] ?? '')
+    if (!code) return
+    saved[code] = {
+      noteNiveau: row[COL_NIVEAU] ?? '',
+      noteComportement: row[COL_COMPORTEMENT] ?? '',
+      noteMotivation: row[COL_MOTIVATION] ?? '',
+      remarque: row[COL_REMARQUE] ?? '',
+    }
+  })
+  try { localStorage.setItem(storageKey(fileName), JSON.stringify(saved)) } catch {}
+}
+
+function restoreEvals(fileName: string, data: RawRow[]) {
+  try {
+    const raw = localStorage.getItem(storageKey(fileName))
+    if (!raw) return
+    const saved: SavedEvals = JSON.parse(raw)
+    data.slice(1).forEach(row => {
+      const code = String(row[COL_CODE] ?? '')
+      const e = saved[code]
+      if (!e) return
+      while (row.length <= COL_REMARQUE) row.push(undefined)
+      row[COL_NIVEAU] = e.noteNiveau
+      row[COL_COMPORTEMENT] = e.noteComportement
+      row[COL_MOTIVATION] = e.noteMotivation
+      row[COL_REMARQUE] = e.remarque
+    })
+  } catch {}
+}
+
 export function useCandidats() {
   const rows = ref<RawRow[]>([])
   const selectedIndex = shallowRef(0)
+  let currentFileName = ''
 
   const headers = computed<RawRow>(() => rows.value[0] ?? [])
 
@@ -104,6 +144,8 @@ export function useCandidats() {
     }
 
     const data = XLSX.utils.sheet_to_json<RawRow>(ws, { header: 1, defval: '' })
+    currentFileName = file.name
+    restoreEvals(currentFileName, data)
     rows.value = data
     selectedIndex.value = 0
   }
@@ -116,6 +158,7 @@ export function useCandidats() {
     row[COL_COMPORTEMENT] = data.noteComportement
     row[COL_MOTIVATION] = data.noteMotivation
     row[COL_REMARQUE] = data.remarque
+    if (currentFileName) persistEvals(currentFileName, rows.value)
   }
 
   function exportFile(originalName: string): void {
