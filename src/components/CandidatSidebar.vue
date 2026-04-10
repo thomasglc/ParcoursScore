@@ -39,6 +39,7 @@ function scoreColor(c: CandidatRow): string {
         {{ candidats.length }} candidat{{ candidats.length > 1 ? 's' : '' }}
         <span class="text-slate-600 font-normal ml-1">
           · {{ candidats.filter(c => evalCount(c) > 0).length }} évalués
+          <span class="text-slate-700">({{ candidats.length ? Math.round(candidats.filter(c => evalCount(c) > 0).length / candidats.length * 100) : 0 }}%)</span>
         </span>
       </p>
     </div>
