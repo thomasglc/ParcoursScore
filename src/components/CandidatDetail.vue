@@ -36,6 +36,12 @@ watch(
   }
 )
 
+function clampNote(field: 'noteNiveau' | 'noteComportement' | 'noteMotivation') {
+  const v = form[field]
+  if (v === null || v === undefined) return
+  form[field] = Math.min(20, Math.max(0, v)) as number
+}
+
 function save() { emit('updateEvaluation', { ...form }) }
 
 // — Column groups —
@@ -141,19 +147,19 @@ const candidatName = computed(() =>
               <label class="block text-xs text-slate-500 mb-1">Niveau</label>
               <input v-model="form.noteNiveau" type="number" min="0" max="20" step="0.5" placeholder="—"
                 class="w-full bg-slate-700 border border-slate-600 rounded-lg px-2 py-1.5 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                @change="save" />
+                @change="clampNote('noteNiveau'); save()" />
             </div>
             <div>
               <label class="block text-xs text-slate-500 mb-1">Comportement</label>
               <input v-model="form.noteComportement" type="number" min="0" max="20" step="0.5" placeholder="—"
                 class="w-full bg-slate-700 border border-slate-600 rounded-lg px-2 py-1.5 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                @change="save" />
+                @change="clampNote('noteComportement'); save()" />
             </div>
             <div>
               <label class="block text-xs text-slate-500 mb-1">Motivation</label>
               <input v-model="form.noteMotivation" type="number" min="0" max="20" step="0.5" placeholder="—"
                 class="w-full bg-slate-700 border border-slate-600 rounded-lg px-2 py-1.5 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                @change="save" />
+                @change="clampNote('noteMotivation'); save()" />
             </div>
           </div>
           <textarea v-model="form.remarque" rows="2" placeholder="Remarque..."
