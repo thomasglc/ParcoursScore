@@ -33,9 +33,9 @@ watch(() => props.candidat, (c) => {
 })
 
 function clampNote(field: 'noteNiveau' | 'noteComportement' | 'noteMotivation') {
-  const v = form[field]
-  if (v === null || v === undefined) return
-  form[field] = Math.min(20, Math.max(0, v)) as number
+  const v = parseFloat(String(form[field]))
+  if (isNaN(v)) return
+  form[field] = Math.min(20, Math.max(0, v))
 }
 function save() { emit('updateEvaluation', { ...form }) }
 
