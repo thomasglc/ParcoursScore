@@ -2,6 +2,7 @@
 import { shallowRef, computed, onMounted, onUnmounted } from 'vue'
 import { useCandidats } from '@/composables/useCandidats'
 import { usePdf } from '@/composables/usePdf'
+import { useTheme } from '@/composables/useTheme'
 import FileDropzone from './FileDropzone.vue'
 import LoadingScreen from './LoadingScreen.vue'
 import CandidatSidebar from './CandidatSidebar.vue'
@@ -14,6 +15,7 @@ const {
 
 const { pdfDoc, hasPdf, isPdfParsing, loadPdf, getDossierRange, isSearching } = usePdf()
 
+const { isDark, toggle: toggleTheme } = useTheme()
 const fileName = shallowRef('')
 
 // État dérivé — source unique de vérité
@@ -73,10 +75,26 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
       <aside class="w-72 flex-shrink-0 bg-slate-800 border-r border-slate-700 flex flex-col overflow-hidden">
         <div class="px-4 py-3 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
           <span class="text-indigo-400 font-bold text-sm tracking-tight">ParcoursScore</span>
-          <button
-            class="text-xs bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 px-3 py-1.5 rounded-lg text-white font-medium transition-colors"
-            @click="exportFile(fileName)"
-          >Exporter</button>
+          <div class="flex items-center gap-2">
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+              :title="isDark ? 'Thème clair' : 'Thème sombre'"
+              @click="toggleTheme"
+            >
+              <!-- Sun -->
+              <svg v-if="isDark" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707M17.657 17.657l-.707-.707M6.343 6.343l-.707-.707M12 7a5 5 0 100 10A5 5 0 0012 7z"/>
+              </svg>
+              <!-- Moon -->
+              <svg v-else class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+              </svg>
+            </button>
+            <button
+              class="text-xs bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 px-3 py-1.5 rounded-lg text-white font-medium transition-colors"
+              @click="exportFile(fileName)"
+            >Exporter</button>
+          </div>
         </div>
         <CandidatSidebar
           :candidats="candidats"

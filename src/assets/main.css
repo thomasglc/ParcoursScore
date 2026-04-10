@@ -1,1 +1,47 @@
 @import "tailwindcss";
+
+/* ── Dark theme (default) ── */
+:root { color-scheme: dark; }
+
+/* ── Light theme ── */
+html.light {
+  color-scheme: light;
+
+  /* Fonds */
+  --color-slate-950: #f0f4f8;
+  --color-slate-900: #f0f4f8;   /* fond de page — bleu-gris très doux */
+  --color-slate-800: #ffffff;   /* cartes — blanc pur */
+  --color-slate-700: #edf2f7;   /* fond inputs */
+  --color-slate-600: #d1dce8;   /* bordures visibles */
+
+  /* Textes — contrastes élevés */
+  --color-slate-500: #5a6a7e;   /* labels */
+  --color-slate-400: #3d4f63;   /* titres sections */
+  --color-slate-300: #2d3a47;   /* contenu secondaire */
+  --color-slate-200: #1a2533;   /* contenu primaire */
+  --color-slate-100: #0f1a24;
+  --color-slate-50:  #0f1a24;
+
+  /* text-white → quasi-noir */
+  --color-white: #1a2533;
+
+  /* Accents utilisés avec modificateurs d'opacité */
+  --color-indigo-950: #6366f1;  /* /30 → teinte indigo légère */
+  --color-indigo-800: #818cf8;  /* bordures /40 */
+  --color-indigo-700: #a5b4fc;  /* bordures /50 */
+  --color-violet-950: #8b5cf6;
+  --color-violet-800: #a78bfa;
+  --color-emerald-950: #10b981;
+  --color-emerald-800: #34d399;
+}
+
+/* Profondeur visuelle sur les cartes en thème clair */
+html.light .rounded-xl {
+  box-shadow: 0 1px 4px rgba(15, 26, 36, 0.07), 0 0 0 1px rgba(15, 26, 36, 0.05);
+}
+
+/* Scrollbar light */
+html.light ::-webkit-scrollbar { width: 6px; height: 6px; }
+html.light ::-webkit-scrollbar-track { background: #f0f4f8; }
+html.light ::-webkit-scrollbar-thumb { background: #c4d0dc; border-radius: 3px; }
+html.light ::-webkit-scrollbar-thumb:hover { background: #9aadbf; }
