@@ -37,9 +37,9 @@ function scoreColor(c: CandidatRow): string {
     <div class="px-4 py-2.5 border-b border-slate-700/60 flex-shrink-0">
       <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">
         {{ candidats.length }} candidat{{ candidats.length > 1 ? 's' : '' }}
-        <span class="text-slate-600 font-normal ml-1">
+        <span class="text-slate-400 font-normal ml-1">
           · {{ candidats.filter(c => evalCount(c) > 0).length }} évalués
-          <span class="text-slate-700">({{ candidats.length ? Math.round(candidats.filter(c => evalCount(c) > 0).length / candidats.length * 100) : 0 }}%)</span>
+          <span class="text-slate-400">({{ candidats.length ? Math.round(candidats.filter(c => evalCount(c) > 0).length / candidats.length * 100) : 0 }}%)</span>
         </span>
       </p>
     </div>
