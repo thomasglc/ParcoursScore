@@ -26,10 +26,12 @@ const form = reactive<EvaluationData>({
 })
 
 watch(() => props.candidat, (c) => {
-  form.noteNiveau = c.noteNiveau
-  form.noteComportement = c.noteComportement
-  form.noteMotivation = c.noteMotivation
+  const encf = c.raw.some(v => /\bENCF\b/i.test(String(v ?? '')))
+  form.noteNiveau       = (encf && c.noteNiveau === '')       ? 0 : c.noteNiveau
+  form.noteComportement = (encf && c.noteComportement === '') ? 0 : c.noteComportement
+  form.noteMotivation   = (encf && c.noteMotivation === '')   ? 0 : c.noteMotivation
   form.remarque = c.remarque
+  if (encf && c.noteNiveau === '') save()
 })
 
 function clampNote(field: 'noteNiveau' | 'noteComportement' | 'noteMotivation') {
@@ -94,6 +96,9 @@ function colLabel(i: number): string {
     .trim() || `Col ${i}`
 }
 function colValue(i: number): string { return String(props.candidat.raw[i] ?? '—') }
+function isEncfValue(i: number): boolean { return /\bENCF\b/i.test(colValue(i)) }
+
+const isEncf = computed(() => props.candidat.raw.some(v => /\bENCF\b/i.test(String(v ?? ''))))
 
 const candidatName = computed(() =>
   [props.candidat.raw[props.displayCols.nom], props.candidat.raw[props.displayCols.prenom]]
@@ -188,7 +193,7 @@ const avgScore = computed(() => {
               <dl class="grid grid-cols-2 gap-x-3 gap-y-2.5">
                 <div v-for="i in group.cols" :key="i">
                   <dt class="text-xs text-slate-500 leading-tight mb-0.5">{{ colLabel(i) }}</dt>
-                  <dd class="text-sm text-slate-200 font-medium break-words leading-tight">{{ colValue(i) }}</dd>
+                  <dd class="text-sm font-medium break-words leading-tight" :class="isEncfValue(i) ? 'text-rose-400 font-bold' : 'text-slate-200'">{{ colValue(i) }}</dd>
                 </div>
               </dl>
             </section>
@@ -206,7 +211,7 @@ const avgScore = computed(() => {
             <dl class="grid grid-cols-3 gap-x-4 gap-y-3">
               <div v-for="i in generalOtherCols" :key="i">
                 <dt class="text-xs text-slate-500 leading-tight mb-0.5">{{ colLabel(i) }}</dt>
-                <dd class="text-sm text-slate-200 font-medium break-words leading-tight" :title="colValue(i)">{{ colValue(i) }}</dd>
+                <dd class="text-sm font-medium break-words leading-tight" :class="isEncfValue(i) ? 'text-rose-400 font-bold' : 'text-slate-200'" :title="colValue(i)">{{ colValue(i) }}</dd>
               </div>
             </dl>
           </section>
