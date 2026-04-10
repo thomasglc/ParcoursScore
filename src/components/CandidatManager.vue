@@ -7,6 +7,8 @@ import FileDropzone from './FileDropzone.vue'
 import LoadingScreen from './LoadingScreen.vue'
 import CandidatSidebar from './CandidatSidebar.vue'
 import CandidatDetail from './CandidatDetail.vue'
+import TutorialOverlay from './TutorialOverlay.vue'
+import { useTutorial } from '@/composables/useTutorial'
 
 const {
   headers, candidats, selectedCandidat, selectedIndex, hasData, displayCols,
@@ -16,6 +18,7 @@ const {
 const { pdfDoc, hasPdf, isPdfParsing, loadPdf, getDossierRange, isSearching } = usePdf()
 
 const { isDark, toggle: toggleTheme } = useTheme()
+const { open: openTutorial } = useTutorial()
 const fileName = shallowRef('')
 
 // État dérivé — source unique de vérité
@@ -54,6 +57,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
 
 <template>
   <div class="flex h-screen bg-slate-900 text-white overflow-hidden">
+    <TutorialOverlay />
 
     <!-- Idle : chargement des fichiers -->
     <div v-if="appState === 'idle'" class="flex-1 p-8">
@@ -76,6 +80,15 @@ onUnmounted(() => window.removeEventListener('keydown', onKeyDown))
         <div class="px-4 py-3 border-b border-slate-700 flex items-center justify-between flex-shrink-0">
           <span class="text-indigo-400 font-bold text-sm tracking-tight">ParcoursScore</span>
           <div class="flex items-center gap-2">
+            <button
+              class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
+              title="Guide d'utilisation"
+              @click="openTutorial"
+            >
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+            </button>
             <button
               class="w-7 h-7 flex items-center justify-center rounded-lg bg-slate-700 hover:bg-slate-600 text-slate-300 transition-colors"
               :title="isDark ? 'Thème clair' : 'Thème sombre'"

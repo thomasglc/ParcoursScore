@@ -151,7 +151,7 @@ const avgScore = computed(() => {
           <div class="flex items-end gap-6">
             <!-- 3 scores -->
             <div class="flex gap-5 flex-1">
-              <div v-for="(label, field) in ({ noteNiveau: 'Niveau technique', noteComportement: 'Savoir-être', noteMotivation: 'Motivation' } as const)" :key="field" class="flex-1">
+              <div v-for="(label, field) in ({ noteNiveau: 'Niveau', noteComportement: 'Savoir-être', noteMotivation: 'Motivation' } as const)" :key="field" class="flex-1">
                 <label class="block text-sm text-slate-400 mb-2">{{ label }}</label>
                 <input
                   v-model="form[field]" type="number" min="0" max="20" step="0.5" placeholder="/20"
