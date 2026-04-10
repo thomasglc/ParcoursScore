@@ -31,6 +31,7 @@ watch(zoom, () => { if (fullscreen.value) renderFullscreen() })
 onMounted(renderPage)
 
 function onKeyDown(e: KeyboardEvent) {
+  if (e.key === 'f' || e.key === 'F') { fullscreen.value = !fullscreen.value; return }
   if (!fullscreen.value) return
   if (e.key === 'Escape') fullscreen.value = false
   if (e.key === '+' || e.key === '=') zoomIn()
