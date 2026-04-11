@@ -173,6 +173,7 @@ const avgScore = computed(() => {
               v-model="form.remarque" rows="4" placeholder="Remarque..."
               class="w-64 flex-shrink-0 bg-slate-700/80 border border-slate-600 rounded-lg px-3 py-2.5 text-white text-sm placeholder-slate-600 focus:outline-none focus:border-indigo-500 resize-none leading-relaxed"
               @change="save"
+              @blur="save"
             />
           </div>
         </section>

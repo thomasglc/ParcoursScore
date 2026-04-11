@@ -47,8 +47,15 @@ async function onXlsxLoaded(file: File, name: string) {
 
 function onKeyDown(e: KeyboardEvent) {
   if (appState.value !== 'ready') return
-  if (e.key === 'ArrowUp') { e.preventDefault(); selectPrev() }
-  if (e.key === 'ArrowDown') { e.preventDefault(); selectNext() }
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault()
+    const active = document.activeElement as HTMLElement | null
+    if (active && (active.tagName === 'TEXTAREA' || active.tagName === 'INPUT')) {
+      active.blur()
+    }
+    if (e.key === 'ArrowUp') selectPrev()
+    else selectNext()
+  }
 }
 
 onMounted(() => window.addEventListener('keydown', onKeyDown))
